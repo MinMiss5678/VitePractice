@@ -25,17 +25,19 @@
         </tbody>
       </table>
     </div>
-    <router-view v-slot="{ Component }">
-      <transition name="fade">
-        <component :is="Component"/>
-      </transition>
-    </router-view>
   </div>
+  <router-view v-slot="{ Component }">
+    <transition name="fade">
+      <component :is="Component"/>
+    </transition>
+  </router-view>
+  <div>Current Count: {{ quadrupleCounter }}</div>
 </template>
 
 <script setup lang="ts">
-import type {Ref} from 'vue';
-import {onMounted, ref} from 'vue';
+import type {ComputedRef, Ref} from 'vue';
+import {onMounted, computed, ref} from 'vue';
+import {useCounterStore} from '@/stores/counter'
 
 type Forecasts = {
   date: string,
@@ -62,6 +64,14 @@ const fetchData = async () => {
 onMounted(() => {
   fetchData();
 });
+
+const counter = useCounterStore()
+counter.count++
+
+counter.increment()
+const quadrupleCounter: ComputedRef<number> = computed(() => {
+  return counter.doubleCount * 2
+})
 </script>
 
 <style scoped>
